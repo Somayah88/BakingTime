@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">Baking App</string>
+    <string name="app_name">Baking Time</string>
     <string name="action_settings">Settings</string>
+    <string name="recipe_name_default">Recipe Name is Not Available</string>
+    <string name="Not_Available">N/A</string>
+    <string name="servings"> Servings</string>
 </resources>
