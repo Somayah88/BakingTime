@@ -2,4 +2,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="recipe_name_textSize">32sp</dimen>
     <dimen name="serving_textSize">16sp</dimen>
+    <dimen name="cardView_Radius">4dp</dimen>
+    <dimen name="cardView_elevation">1dp</dimen>
 </resources>

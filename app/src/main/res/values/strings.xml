@@ -4,4 +4,7 @@
     <string name="recipe_name_default">Recipe Name is Not Available</string>
     <string name="Not_Available">N/A</string>
     <string name="servings"> Servings</string>
+    <string name="detail_error">Recipe Data is not Available </string>
+    <string name="ingredient_label">Ingredients</string>
+    <string name="steps_label">Steps</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.somayahalharbi.bakingapp.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -84,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
     @Override
     public void onClick(Recipe recipe) {
+        Context context = this;
+        Class destinationClass = DetailsActivity.class;
+        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+        intentToStartDetailActivity.putExtra("recipe", recipe);
+        startActivity(intentToStartDetailActivity);
 
     }
 

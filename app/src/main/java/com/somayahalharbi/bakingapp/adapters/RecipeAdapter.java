@@ -88,6 +88,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
 
         @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
+            Recipe recipeData = recipesList.get(position);
+            mClickHandler.onClick(recipeData);
 
         }
     }
