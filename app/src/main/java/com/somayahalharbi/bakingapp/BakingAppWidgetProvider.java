@@ -2,11 +2,19 @@ package com.somayahalharbi.bakingapp;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 
 
-public class BakingAppWidget extends AppWidgetProvider {
+public class BakingAppWidgetProvider extends AppWidgetProvider {
+
+    public static void sendRefreshBroadcast(Context context) {
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.setComponent(new ComponentName(context, BakingAppWidgetProvider.class));
+        context.sendBroadcast(intent);
+    }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
@@ -18,6 +26,18 @@ public class BakingAppWidget extends AppWidgetProvider {
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    @Override
+    public void onReceive(final Context context, Intent intent) {
+
+        final String action = intent.getAction();
+        if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName cn = new ComponentName(context, BakingAppWidgetProvider.class);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(cn), R.id.widget_listView);
+        }
+        super.onReceive(context, intent);
     }
 
     @Override

@@ -1,10 +1,18 @@
 package com.somayahalharbi.bakingapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 
-public class BakingAppWidgetViewFactory implements RemoteViewsService.RemoteViewsFactory {
+public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
+    private Context mContext;
+
+    public BakingAppRemoteViewFactory(Context mContext, Intent intent) {
+        this.mContext = mContext;
+    }
+
     @Override
     public void onCreate() {
 

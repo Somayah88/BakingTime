@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.somayahalharbi.bakingapp.BakingAppWidgetProvider;
 import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.adapters.IngredientsAdapter;
 import com.somayahalharbi.bakingapp.adapters.StepsAdapter;
@@ -198,6 +199,16 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
                 twoPane = true;
                 break;
         }
+    }
+
+    public void updateIngredientWidget() {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                BakingAppWidgetProvider.sendRefreshBroadcast(DetailsActivity.this);
+            }
+        });
     }
 
 }
