@@ -22,6 +22,7 @@ public class DataContract {
         public static final String COLUMN_INGREDIENT_NAME = "ingredient_name";
         public static final String COLUMN_QUANTITY = "quantity";
         public static final String COLUMN_MEASUREMENT = "measurement";
+        public static final String COLUMN_RECIPE_NAME = "recipe_name";
 
 
     }

@@ -7,6 +7,6 @@
     <string name="detail_error">Recipe Data is not Available </string>
     <string name="ingredient_label_tv">Ingredients</string>
     <string name="steps_label">Steps</string>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="widget_recipe_name">No Recipe Selected</string>
     <string name="add_widget">Add widget</string>
 </resources>

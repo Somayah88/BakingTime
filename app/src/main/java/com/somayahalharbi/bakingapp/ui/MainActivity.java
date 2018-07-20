@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import com.somayahalharbi.bakingapp.BakingAppRemoteViewsService;
 import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.Utils.ApiService;
 import com.somayahalharbi.bakingapp.Utils.NetworkUtilities;
+import com.somayahalharbi.bakingapp.Utils.SharedPref;
 import com.somayahalharbi.bakingapp.adapters.RecipeAdapter;
 import com.somayahalharbi.bakingapp.models.Recipe;
 
@@ -90,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         Class destinationClass = DetailsActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
         intentToStartDetailActivity.putExtra("recipe", recipe);
+        SharedPref pref = new SharedPref();
+        pref.setPrefData(context, recipe);
+        BakingAppRemoteViewsService widgetService = new BakingAppRemoteViewsService();
         startActivity(intentToStartDetailActivity);
 
     }
