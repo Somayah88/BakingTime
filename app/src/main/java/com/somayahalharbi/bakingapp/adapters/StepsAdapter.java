@@ -22,8 +22,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
     private StepAdapterOnClickHandler mOnClickHandler;
     private List<Step> stepsList = new ArrayList<>();
 
-    public StepsAdapter() {
-        //mOnClickHandler=onClickHandler;
+    public StepsAdapter(StepAdapterOnClickHandler onClickHandler) {
+        mOnClickHandler = onClickHandler;
 
     }
 
@@ -40,7 +40,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
     @Override
     public void onBindViewHolder(@NonNull StepsAdapterViewHolder holder, int position) {
         String description = stepsList.get(position).getShortDescription();
+        int id = stepsList.get(position).getId();
         holder.descriptionTextView.setText(description);
+        holder.stepIdTextView.setText(String.valueOf(id));
 
     }
 
@@ -65,22 +67,32 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsAdapter
 
     }
 
+    public void setStepsAdapterOnClickListener(StepAdapterOnClickHandler onClickHandler) {
+        mOnClickHandler = onClickHandler;
+    }
+
     public interface StepAdapterOnClickHandler {
-        void onClick(Step step);
+        void onClick(int position);
     }
 
     public class StepsAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.step_description)
         TextView descriptionTextView;
+        @BindView(R.id.steps_id_tv)
+        TextView stepIdTextView;
 
         public StepsAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
+            if (mOnClickHandler != null) {
+                mOnClickHandler.onClick(getAdapterPosition());
+            }
 
         }
     }

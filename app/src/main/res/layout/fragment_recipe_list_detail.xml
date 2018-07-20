@@ -11,7 +11,7 @@
         android:id="@+id/ingredients_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ingredient_label"
+        android:text="@string/ingredient_label_tv"
         android:textSize="@dimen/serving_textSize" />
 
     <android.support.v7.widget.RecyclerView

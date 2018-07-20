@@ -44,7 +44,7 @@ public class RecipeDetailListFragment extends Fragment implements StepsAdapter.S
 
 
     @Override
-    public void onClick(Step step) {
+    public void onClick(int position) {
 
     }
 
@@ -60,7 +60,7 @@ public class RecipeDetailListFragment extends Fragment implements StepsAdapter.S
         ingredientsAdapter.setData(ingredientList);
         GridLayoutManager stepsLayoutManager = new GridLayoutManager(rootView.getContext(), 1, GridLayoutManager.VERTICAL, false);
         stepsRV.setLayoutManager(stepsLayoutManager);
-        stepsAdapter = new StepsAdapter();
+        stepsAdapter = new StepsAdapter(this);
         stepsRV.setAdapter(stepsAdapter);
         stepsAdapter.setData(stepsList);
 

@@ -39,7 +39,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         String measurement = ingredientList.get(position).getMeasure();
         String name = ingredientList.get(position).getIngredient();
         double quantity = ingredientList.get(position).getQuantity();
-        holder.ingrediantName.setText(name);
+        holder.ingredientName.setText(name);
         holder.measurement.setText(measurement);
         holder.quantity.setText(String.valueOf(quantity));
 
@@ -71,7 +71,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     public class IngredientsAdapterViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ingredient_name)
-        TextView ingrediantName;
+        TextView ingredientName;
         @BindView(R.id.measurement)
         TextView measurement;
         @BindView(R.id.quantity)
