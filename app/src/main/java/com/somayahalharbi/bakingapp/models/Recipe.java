@@ -7,7 +7,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Recipe implements Parcelable {
@@ -48,6 +47,10 @@ public class Recipe implements Parcelable {
         this.steps = in.createTypedArrayList(Step.CREATOR);
         this.servings = in.readInt();
         this.image = in.readString();
+    }
+
+    public Recipe() {
+
     }
 
     public int getId() {

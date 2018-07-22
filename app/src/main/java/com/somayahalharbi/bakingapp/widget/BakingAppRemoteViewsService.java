@@ -1,4 +1,4 @@
-package com.somayahalharbi.bakingapp;
+package com.somayahalharbi.bakingapp.widget;
 
 import android.content.Intent;
 import android.widget.RemoteViewsService;

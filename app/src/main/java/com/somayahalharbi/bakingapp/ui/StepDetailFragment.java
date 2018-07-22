@@ -3,6 +3,7 @@ package com.somayahalharbi.bakingapp.ui;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,12 +11,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -29,6 +34,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.models.Step;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -36,11 +42,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static android.support.constraint.Constraints.TAG;
+
 
 public class StepDetailFragment extends Fragment implements View.OnClickListener {
+    public static final String EXTRA_PLAYER_POSITION = "player_position";
+    public static final String EXTRA_PLAYER_READY = "player_ready";
     private static MediaSessionCompat mMediaSession;
+    public final String EXTRA_ROTATION = "exra_is_rotated";
     private final String STEPS_INDEX = "step_index";
     private final String STEPS_LIST = "steps_list";
+    private final String LANDSCAPE_EXTRA = "landscape_mode";
+
+    @BindView(R.id.rv_details)
+    protected RelativeLayout mRelativeLayout;
+    @BindView(R.id.line_content)
+    protected LinearLayout mLinearLayout;
     @BindView(R.id.video_player)
     SimpleExoPlayerView mVideoPlayer;
     @BindView(R.id.no_video_tv)
@@ -51,15 +68,42 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     ImageView nextButton;
     @BindView(R.id.prev_step)
     ImageView prevButton;
-    private ArrayList<Step> stepList = new ArrayList<>();
+    @BindView(R.id.thumbnail_ImageView)
+    ImageView thumbnailImageView;
+    private SimpleExoPlayer mExoPlayer;
     private int currentStepIndex;
-    private SimpleExoPlayer mExoVideoPlayer;
     private Unbinder viewUnbinder;
+    private ArrayList<Step> stepList = new ArrayList<>();
+    private boolean isRotated;
+    private long mPlayerPosition;
+    private boolean isPlayWhenReady;
+    private boolean isLandscape;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mPlayerPosition = savedInstanceState.getLong(EXTRA_PLAYER_POSITION);
+            isPlayWhenReady = savedInstanceState.getBoolean(EXTRA_PLAYER_READY);
+            if (mPlayerPosition != C.TIME_UNSET && isPlayWhenReady) {
+                Log.d(TAG, "mPlayerPosition onRestore = " + String.valueOf(mPlayerPosition));
+                mExoPlayer.seekTo(mPlayerPosition);
+
+            }
+            Log.d(TAG, "mPlayerPosition after savedInstanceState = " + String.valueOf(mPlayerPosition));
+            Log.d(TAG, "isPlayWhenReady after savedInstanceState = " + String.valueOf(isPlayWhenReady));
+
+        }
+    }
+
+
+//TODO: Fix: the video doesn't fill screen on rotation
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
         viewUnbinder = ButterKnife.bind(this, rootView);
         Bundle bundle = this.getArguments();
@@ -67,31 +111,140 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
             if (bundle.containsKey(STEPS_INDEX) && bundle.containsKey(STEPS_LIST)) {
                 stepList = bundle.getParcelableArrayList(STEPS_LIST);
                 currentStepIndex = bundle.getInt(STEPS_INDEX);
+                isRotated = bundle.getBoolean(EXTRA_ROTATION);
+                isLandscape = bundle.getBoolean(LANDSCAPE_EXTRA);
 
             }
         }
-
-        if (stepList != null && stepList.size() > 0)
-            displayData();
-
-
         nextButton.setOnClickListener(this);
         prevButton.setOnClickListener(this);
+        if (currentStepIndex == 0) {
+            prevButton.setVisibility(View.INVISIBLE);
+            nextButton.setVisibility(View.VISIBLE);
+        }
+        if (currentStepIndex == stepList.size() - 1) {
+            nextButton.setVisibility(View.INVISIBLE);
+            prevButton.setVisibility(View.VISIBLE);
+        }
+        if (isLandscape) {
+            //make viewGroup that contains exoplayer match parent
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            //Also cancel padding make it 0 in all edges
+            mLinearLayout.setPadding(0, 0, 0, 0);
+            mLinearLayout.setLayoutParams(layoutParams);
+            mRelativeLayout.setVisibility(View.GONE);
+
+        }
+
+        if (stepList != null && stepList.size() > 0) {
+            initializeView();
+        }
 
         return rootView;
 
 
     }
 
-    private void displayData() {
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //last position of playing video
+        outState.putLong(EXTRA_PLAYER_POSITION, mPlayerPosition);
+        //last state of player if ready(true) or not ready(false)
+        outState.putBoolean(EXTRA_PLAYER_READY, isPlayWhenReady);
+
+        Log.d(TAG, "mPlayerPosition before savedInstanceState = " + String.valueOf(mPlayerPosition));
+        Log.d(TAG, "isPlayWhenReady before savedInstanceState = " + String.valueOf(isPlayWhenReady));
+
+    }
+
+    private void initializePlayer(Uri mVideoUri) {
+
+        if (mExoPlayer == null) {
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(
+                    new DefaultRenderersFactory(getActivity()),
+                    new DefaultTrackSelector(), new DefaultLoadControl());
+            mVideoPlayer.setPlayer(mExoPlayer);
+            mExoPlayer.setPlayWhenReady(true);
+            MediaSource mediaSource = buildMediaSource(mVideoUri);
+            mExoPlayer.prepare(mediaSource, false, false);
+
+        }
+    }
+
+    private void initializeView() {
+        releaseVideoPlayer();
+        //  mImageAlternative.setVisibility(View.GONE);
+        //make sure mStepsArrayList not empty
+        if (stepList.size() > 0) {
+            //get value of videoUrl by pass last value of mIndex
+            String videoUrl = stepList.get(currentStepIndex).getVideoURL();//stepList.get(currentStepIndex).getVideoURL();
+            //get value of thumbnailURL by pass last value of mIndex
+            String thumbnailURL = stepList.get(currentStepIndex).getThumbnailURL();
+            /*if boolean No Rotation or mIstablet true will show the Description below video
+             * no rotation because no space in screen to display will show Description just in Tablet*/
+            if (!isRotated || isTablet()) {
+                descriptionTv.setText(stepList.get(currentStepIndex).getDescription());
+
+            }
+            //play video if value of videoUrl not empty if empty just text will display message
+            if (videoUrl.isEmpty() && thumbnailURL.isEmpty()) {
+
+                noVideoTv.setVisibility(View.VISIBLE);
+                mVideoPlayer.setVisibility(View.GONE);
+                //  mImageAlternative.setVisibility(View.GONE);
+                Log.d(TAG, "TestShow \n Description = " + stepList.get(currentStepIndex).getDescription());
+
+
+            } else if (!videoUrl.isEmpty()) {
+                initializePlayer(Uri.parse(videoUrl));
+                noVideoTv.setVisibility(View.GONE);
+                mVideoPlayer.setVisibility(View.VISIBLE);
+                Log.d(TAG, "TestShow  \n videoUrl =" + videoUrl);
+
+            } else if
+                    (!thumbnailURL.isEmpty()) {
+                noVideoTv.setVisibility(View.GONE);
+                mVideoPlayer.setVisibility(View.GONE);
+                Picasso
+                        .with(getActivity())
+                        .load(thumbnailURL)
+                        .placeholder(R.mipmap.ic_launcher) // can also be a drawable
+                        .into(thumbnailImageView);
+                thumbnailImageView.setVisibility(View.VISIBLE);
+
+                /*Glide.with(getActivity())
+                        .load(thumbnailURL)
+                        .apply(new RequestOptions()
+                                .placeholder(R.drawable.brownies))
+                        .into(mImageAlternative);
+*/
+                //TODO: change the image placeholder.
+                Log.d(TAG, "TestShow \n thumbnailURL =" + thumbnailURL);
+
+            }
+
+
+        }
+    }
+
+    public boolean isTablet() {
+        return (getActivity().getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+
+   /* private void displayData() {
         releaseVideoPlayer();
         playVideo();
         descriptionTv.setText(stepList.get(currentStepIndex).getDescription());
 
-    }
+    }*/
 
     private void playVideo() {
-        if (mExoVideoPlayer == null) {
+        if (mExoPlayer == null) {
             String videoUrl = stepList.get(currentStepIndex).getVideoURL();
 
             if (videoUrl != null) {
@@ -99,13 +252,13 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
                 noVideoTv.setVisibility(View.GONE);
                 if (mVideoPlayer == null) {
 
-                    mExoVideoPlayer = ExoPlayerFactory.newSimpleInstance(
+                    mExoPlayer = ExoPlayerFactory.newSimpleInstance(
                             new DefaultRenderersFactory(getActivity()),
                             new DefaultTrackSelector(), new DefaultLoadControl());
-                    mVideoPlayer.setPlayer(mExoVideoPlayer);
-                    mExoVideoPlayer.setPlayWhenReady(true);
+                    mVideoPlayer.setPlayer(mExoPlayer);
+                    mExoPlayer.setPlayWhenReady(true);
                     MediaSource mediaSource = buildMediaSource(Uri.parse(videoUrl));
-                    mExoVideoPlayer.prepare(mediaSource, true, false);
+                    mExoPlayer.prepare(mediaSource, true, false);
                 }
 
             } else {
@@ -137,6 +290,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
                     nextButton.setVisibility(View.VISIBLE);
                     prevButton.setVisibility(View.VISIBLE);
                 }
+                initializeView();
             }
         } else if (id == R.id.next_step) {
             if (stepList != null) {
@@ -150,19 +304,18 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
                     nextButton.setVisibility(View.VISIBLE);
                     prevButton.setVisibility(View.VISIBLE);
                 }
-
+                initializeView();
             }
 
 
         }
-        displayData();
 
     }
 
     private void releaseVideoPlayer() {
-        if (mExoVideoPlayer != null)
-            mExoVideoPlayer.release();
-        mExoVideoPlayer = null;
+        if (mExoPlayer != null)
+            mExoPlayer.release();
+        mExoPlayer = null;
     }
 
     @Override
@@ -175,6 +328,19 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     @Override
     public void onPause() {
         super.onPause();
+        //get current position for video playing  before onPause
+
+        if (mExoPlayer != null) {
+            mPlayerPosition = mExoPlayer.getCurrentPosition();
+            isPlayWhenReady = mExoPlayer.getPlayWhenReady();
+
+        }
+
+        //get current ready state of video player before onPause
+        //  isPlayWhenReady = mExoPlayer.getPlayWhenReady();
+
+        Log.d(TAG, "mPlayerPosition onPause = " + String.valueOf(mPlayerPosition));
+
         if (Util.SDK_INT <= 23) {
             releaseVideoPlayer();
         }
@@ -197,4 +363,5 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
             MediaButtonReceiver.handleIntent(mMediaSession, intent);
         }
     }
+
 }

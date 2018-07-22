@@ -5,6 +5,6 @@
     tools:keep="@drawable/border">
     <stroke
         android:width="2dp"
-        android:color="#000000" />
+        android:color="#ddadaf" />
     <corners android:radius="5dp" />
 </shape>

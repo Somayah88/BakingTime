@@ -9,13 +9,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.somayahalharbi.bakingapp.BakingAppRemoteViewsService;
 import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.Utils.ApiService;
 import com.somayahalharbi.bakingapp.Utils.NetworkUtilities;
 import com.somayahalharbi.bakingapp.Utils.SharedPref;
 import com.somayahalharbi.bakingapp.adapters.RecipeAdapter;
+import com.somayahalharbi.bakingapp.idling.EspressoIdlingResource;
 import com.somayahalharbi.bakingapp.models.Recipe;
+import com.somayahalharbi.bakingapp.widget.BakingAppRemoteViewsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,9 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         GridLayoutManager gridLayoutManager;
-        //TODO: add tablet check
+        fetchData();
+
+
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             gridLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
 
@@ -51,12 +54,12 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         mRecipeAdapter = new RecipeAdapter(this);
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);
 
-        fetchData();
-
 
     }
 
     private void fetchData() {
+        EspressoIdlingResource.increment(); // stops Espresso tests from going forward
+
         ApiService api = NetworkUtilities.getRetrofitInstance().create(ApiService.class);
         Call<List<Recipe>> call = api.getMyJSON();
 
@@ -71,8 +74,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
                     recipes = response.body();
                     if (recipes.size() > 0) {
                         mRecipeAdapter.setRecipesData((ArrayList<Recipe>) recipes);
+                        EspressoIdlingResource.decrement(); // Tells Espresso test to resume
+
 
                     } else {
+                        //TODO: show error message
 
                     }
                 }
@@ -93,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         Class destinationClass = DetailsActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
         intentToStartDetailActivity.putExtra("recipe", recipe);
+        // Update data in shared preference for the widget
         SharedPref pref = new SharedPref();
         pref.setPrefData(context, recipe);
         BakingAppRemoteViewsService widgetService = new BakingAppRemoteViewsService();

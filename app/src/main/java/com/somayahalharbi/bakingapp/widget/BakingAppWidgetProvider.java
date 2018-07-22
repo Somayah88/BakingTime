@@ -1,4 +1,4 @@
-package com.somayahalharbi.bakingapp;
+package com.somayahalharbi.bakingapp.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -10,8 +10,7 @@ import android.net.Uri;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
-import com.somayahalharbi.bakingapp.Utils.SharedPref;
-import com.somayahalharbi.bakingapp.models.Recipe;
+import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.ui.DetailsActivity;
 import com.somayahalharbi.bakingapp.ui.MainActivity;
 
@@ -24,26 +23,26 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
         context.sendBroadcast(intent);
     }
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-        SharedPref pref = new SharedPref();
-        Recipe recipe = pref.getPrefData(context);
-        if (recipe != null) {
-
-            CharSequence widgetText = context.getString(R.string.widget_recipe_name);
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
-            views.setTextViewText(R.id.recipe_name, widgetText);
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-            Intent titleIntent = new Intent(context, MainActivity.class);
-            PendingIntent titlePendingIntent = PendingIntent.getActivity(context, 0, titleIntent, 0);
-            views.setOnClickPendingIntent(R.id.recipe_name, titlePendingIntent);
-            Intent intent = new Intent(context, BakingAppRemoteViewsService.class);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            views.setRemoteAdapter(R.id.widget_listView, intent);
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listView);
-        }
-    }
+//    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+//                                int appWidgetId) {
+//        SharedPref pref = new SharedPref();
+//        Recipe recipe = pref.getPrefData(context);
+//        if (recipe != null) {
+//
+//            CharSequence widgetText = context.getString(R.string.widget_recipe_name);
+//            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
+//            views.setTextViewText(R.id.recipe_name, widgetText);
+//            appWidgetManager.updateAppWidget(appWidgetId, views);
+//            Intent titleIntent = new Intent(context, MainActivity.class);
+//            PendingIntent titlePendingIntent = PendingIntent.getActivity(context, 0, titleIntent, 0);
+//            views.setOnClickPendingIntent(R.id.recipe_name, titlePendingIntent);
+//            Intent intent = new Intent(context, BakingAppRemoteViewsService.class);
+//            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+//            views.setRemoteAdapter(R.id.widget_listView, intent);
+//            appWidgetManager.updateAppWidget(appWidgetId, views);
+//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listView);
+//        }
+//    }
 
     @Override
     public void onReceive(final Context context, Intent intent) {

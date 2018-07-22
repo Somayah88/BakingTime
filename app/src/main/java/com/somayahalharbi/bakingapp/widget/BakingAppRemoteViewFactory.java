@@ -1,10 +1,12 @@
-package com.somayahalharbi.bakingapp;
+package com.somayahalharbi.bakingapp.widget;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.Utils.SharedPref;
 import com.somayahalharbi.bakingapp.models.Ingredient;
 import com.somayahalharbi.bakingapp.models.Recipe;
@@ -16,10 +18,14 @@ public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteView
     private Context mContext;
     private ArrayList<Ingredient> ingredientList = new ArrayList<>();
     private String recipeName;
+    private int appWidgetId;
 
     public BakingAppRemoteViewFactory(Context mContext, Intent intent) {
         this.mContext = mContext;
+        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+
     }
+
 
     @Override
     public void onCreate() {

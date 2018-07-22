@@ -7,6 +7,7 @@
 
 
     <LinearLayout
+        android:id="@+id/line_content"
         android:layout_width="match_parent"
         android:layout_height="260dp"
         android:orientation="horizontal"
@@ -28,10 +29,18 @@
             android:visibility="gone"
 
             />
+
+        <ImageView
+            android:id="@+id/thumbnail_ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_launcher_foreground"
+            android:visibility="gone" />
     </LinearLayout>
 
 
     <RelativeLayout
+        android:id="@+id/rv_details"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="2">
