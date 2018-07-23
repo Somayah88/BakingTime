@@ -21,25 +21,25 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="@dimen/detail_recipe_name_padding">
 
             <TextView
                 android:id="@+id/steps_id_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingRight="5dp"
-                android:textSize="14sp"
+                android:layout_weight="@dimen/layout_weight_first"
+                android:paddingRight="@dimen/detail_recipe_name_padding"
+                android:textSize="@dimen/small_text_size"
 
 
                 />
 
             <TextView
                 android:id="@+id/step_description"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/linear_layout_height_with_weight"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:textSize="14sp" />
+                android:layout_weight="@dimen/layout_weight_third"
+                android:textSize="@dimen/small_text_size" />
         </LinearLayout>
 
 
@@ -47,6 +47,6 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp" />
+        android:layout_height="@dimen/view_dimen" />
 
 </LinearLayout>

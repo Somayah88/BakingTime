@@ -1,7 +1,6 @@
 package com.somayahalharbi.bakingapp.ui;
 
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,15 +21,18 @@ public class StepsDetailsActivity extends AppCompatActivity implements StepDetai
     public static final String EXTRA_STEP_FRAGMENT = "step_fragment";
     private final String STEPS_LIST = "steps_list";
     private final String CURRENT_STEP_INDEX = "step_index";
-    private final String LANDSCAPE_EXTRA = "landscape_mode";
-    Fragment stepsFragment;
+    //*********************************************************
 
     @BindView(R.id.toolbar)
     Toolbar mToolBar;
     @BindView(R.id.back_button)
     ImageView navigationBack;
+    //*********************************************************
+    Fragment stepsFragment;
     private int currentIndex;
     private ArrayList<Step> stepList = new ArrayList<>();
+
+//************************************************************
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,34 +73,9 @@ public class StepsDetailsActivity extends AppCompatActivity implements StepDetai
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(STEPS_LIST, stepList);
         bundle.putInt(CURRENT_STEP_INDEX, currentIndex);
-        bundle.putBoolean(LANDSCAPE_EXTRA, isRotated());
         stepsFragment.setArguments(bundle);
         FragmentManager stepsFragmentManager = getSupportFragmentManager();
         stepsFragmentManager.beginTransaction().replace(R.id.steps_container, stepsFragment).commit();
-
-    }
-
-    private boolean isRotated() {
-
-//        boolean mRotation;
-//        assert (this.getSystemService(Context.WINDOW_SERVICE)) != null;
-//        assert this.getSystemService(Context.WINDOW_SERVICE) != null;
-//        final int rotation = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
-//        switch (rotation) {
-//            case Surface.ROTATION_90:
-//                mRotation = true;
-//                break;
-//
-//            case Surface.ROTATION_180:
-//                mRotation = true;
-//                break;
-//
-//            default:
-//                mRotation = false;
-//        }
-//        return mRotation;
-        return this.getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE;
 
     }
 
@@ -136,7 +113,6 @@ public class StepsDetailsActivity extends AppCompatActivity implements StepDetai
         bundle.putParcelableArrayList(STEPS_LIST, stepList);
         bundle.putInt(CURRENT_STEP_INDEX, index);
         stepsFragment = new StepDetailFragment();
-        // StepDetailFragment stepDetailFragment=new StepDetailFragment();
         stepsFragment.setArguments(bundle);
         FragmentManager stepsFragmentManager = getSupportFragmentManager();
         stepsFragmentManager.beginTransaction().replace(R.id.steps_container, stepsFragment).commit();

@@ -3,7 +3,6 @@ package com.somayahalharbi.bakingapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.somayahalharbi.bakingapp.R;
+import com.somayahalharbi.bakingapp.Utils.DeviceConfig;
 import com.somayahalharbi.bakingapp.adapters.IngredientsAdapter;
 import com.somayahalharbi.bakingapp.adapters.StepsAdapter;
 import com.somayahalharbi.bakingapp.models.Ingredient;
@@ -28,23 +28,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity implements StepsAdapter.StepAdapterOnClickHandler, StepDetailFragment.NavigationButtonListener {
+
     public static final String EXTRA_STEP_FRAGMENT = "step_fragment";
-    public final String EXTRA_ROTATION = "extra_is_rotated";
     private final String INGREDIENTS_LIST_EXTRA = "ingredients_list";
     private final String STEPS_LIST_EXTRA = "steps_list";
     private final String STEPS_LIST = "steps_list";
     private final String CURRENT_STEP_INDEX = "step_index";
+    //*********************************************
     @BindView(R.id.ingredients_recyclerview)
     RecyclerView mIngredientRecyclerView;
     @BindView(R.id.step_recyclerview)
     RecyclerView mStepsRecyclerView;
     @BindView(R.id.recipe_name_tv)
     TextView mRecipeNameTv;
+    //*********************************************
     private StepsAdapter mStepsAdapter;
     private IngredientsAdapter mIngredientAdapter;
+    //*********************************************
     private ArrayList<Step> mStepsList = new ArrayList<>();
     private ArrayList<Ingredient> mIngredientList = new ArrayList<>();
+    //**********************************************
     private int currentPosition;
+    private int defaultCurrentPosition = 0;
     private Fragment mStepDetailFragment;
 
 
@@ -55,27 +60,21 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
-
-
         mStepDetailFragment = new StepDetailFragment();
+        //************** Restore Data from SavedInstance**************
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(INGREDIENTS_LIST_EXTRA)) {
                 mIngredientList = savedInstanceState.getParcelableArrayList(INGREDIENTS_LIST_EXTRA);
                 mStepsList = savedInstanceState.getParcelableArrayList(STEPS_LIST_EXTRA);
                 currentPosition = savedInstanceState.getInt(CURRENT_STEP_INDEX);
-                if (isTablet()) {
+                if (DeviceConfig.isTablet(this)) {
                     mStepDetailFragment = getSupportFragmentManager().getFragment(savedInstanceState, EXTRA_STEP_FRAGMENT);
 
                 }
             }
         }
 
-        if (isTablet()) {
 
-            Log.v("DetailsActivity", "Device is tablet");
-            if (currentPosition >= 0)
-                createFragment(currentPosition, false);
-        }
         //********* Get Data from Intent ***********
         if (savedInstanceState == null) {
             Intent intent = getIntent();
@@ -89,6 +88,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
                     mIngredientList = recipe.getIngredients();
                     mStepsList = recipe.getSteps();
                     mRecipeNameTv.setText(recipe.getName());
+                    currentPosition = defaultCurrentPosition;
 
                 } else {
                     closeOnError();
@@ -116,6 +116,13 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
         mIngredientAdapter.setData(mIngredientList);
         mStepsAdapter.setData(mStepsList);
 
+        if (DeviceConfig.isTablet(this)) {
+
+            Log.v("DetailsActivity", "Device is tablet");
+            if (currentPosition >= 0)
+                createFragment(currentPosition, false);
+        }
+//************ Update Widget**********
         updateIngredientWidget();
     }
 
@@ -129,9 +136,10 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(INGREDIENTS_LIST_EXTRA, mIngredientList);
         outState.putParcelableArrayList(STEPS_LIST_EXTRA, mStepsList);
-        outState.putInt(CURRENT_STEP_INDEX, currentPosition);
-        if (isTablet()) {
+        if (DeviceConfig.isTablet(this)) {
             getSupportFragmentManager().putFragment(outState, EXTRA_STEP_FRAGMENT, mStepDetailFragment);
+            outState.putInt(CURRENT_STEP_INDEX, currentPosition);
+
 
         }
 
@@ -142,7 +150,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
     public void onClick(int position) {
         currentPosition = position;
 
-        if (isTablet()) {
+        if (DeviceConfig.isTablet(this)) {
             mStepDetailFragment = new StepDetailFragment();
             createFragment(currentPosition, false);
         } else {
@@ -161,9 +169,6 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(STEPS_LIST_EXTRA, mStepsList);
         bundle.putInt(CURRENT_STEP_INDEX, position);
-        //bundle.putBoolean(TWO_PANE, twoPane);
-        bundle.putBoolean(EXTRA_ROTATION, rotated);
-
         mStepDetailFragment.setArguments(bundle);
         FragmentManager stepsFragmentManager = getSupportFragmentManager();
         stepsFragmentManager.beginTransaction().replace(R.id.step_container, mStepDetailFragment).commit();
@@ -171,11 +176,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
 
     }
 
-    public boolean isTablet() {
-        return (DetailsActivity.this.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
+
 
     public void updateIngredientWidget() {
 
@@ -189,7 +190,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
 
     @Override
     public void onNextClicked() {
-        if (isTablet())
+        if (DeviceConfig.isTablet(this))
             if (currentPosition < mStepsList.size() - 1) {
                 currentPosition++;
                 replaceFragment(currentPosition);
@@ -201,7 +202,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
 
     @Override
     public void onPrevClicked() {
-        if (isTablet())
+        if (DeviceConfig.isTablet(this))
             if (currentPosition > 0) {
                 currentPosition--;
                 replaceFragment(currentPosition);

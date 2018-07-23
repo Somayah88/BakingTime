@@ -11,10 +11,10 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/recipe_cardview_dimen"
         app:cardBackgroundColor="#ddb8ba"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="1dp"
+        app:cardCornerRadius="@dimen/cardView_Radius"
+        app:cardElevation="@dimen/cardView_elevation"
         app:cardUseCompatPadding="true"
         card_view:cardUseCompatPadding="true">
 
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="8dp"
+                android:padding="@dimen/ingredient_item_textview_padding"
                 android:textColor="@color/textColorMain"
                 android:textSize="@dimen/recipe_name_textSize"
                 android:textStyle="bold"
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:padding="8dp"
+                android:padding="@dimen/ingredient_item_textview_padding"
                 android:textColor="@color/textColorMain"
                 android:textSize="@dimen/serving_textSize"
                 tools:text="@string/Not_Available" />
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="8dp"
+                android:padding="@dimen/ingredient_item_textview_padding"
                 android:text="@string/servings"
                 android:textColor="@color/textColorMain"
                 android:textSize="@dimen/serving_textSize"

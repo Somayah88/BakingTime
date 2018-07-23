@@ -20,7 +20,7 @@
             android:id="@+id/widget_ingredient_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="8dp" />
+            android:paddingRight="@dimen/widget_margin" />
 
         <TextView
             android:id="@+id/widget_ingredient_measurement"

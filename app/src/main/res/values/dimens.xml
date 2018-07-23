@@ -1,13 +1,26 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="recipe_name_textSize">32sp</dimen>
+    <dimen name="recipe_cardview_dimen">200dp</dimen>
     <dimen name="serving_textSize">16sp</dimen>
     <dimen name="cardView_Radius">4dp</dimen>
     <dimen name="cardView_elevation">1dp</dimen>
-
-    <!--
-Refer to App Widget Documentation for margin information
-http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
-    -->
+    <dimen name="linear_layout_height_with_weight">0dp</dimen>
+    <dimen name="large_text_size">20sp</dimen>
+    <dimen name="medium_text_size">18sp</dimen>
+    <dimen name="small_text_size">14sp</dimen>
+    <dimen name="detail_recipe_name_padding">5dp</dimen>
+    <dimen name="detail_ingredient_arrow_size">48dp</dimen>
+    <dimen name="detail_layout_recyclerview_padding">2dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="layout_weight_first">1</dimen>
+    <dimen name="layout_weight_second">2</dimen>
+    <dimen name="layout_weight_third">3</dimen>
+    <dimen name="extra_large_text_size">24sp</dimen>
+    <dimen name="no_video_textSize">30sp</dimen>
+    <dimen name="video_height">260dp</dimen>
+    <dimen name="view_dimen">1dp</dimen>
+    <dimen name="ingredient_item_padding">32dp</dimen>
+    <dimen name="ingredient_item_textview_padding">8dp</dimen>
+    <dimen name="step_description_margin">16dp</dimen>
 </resources>

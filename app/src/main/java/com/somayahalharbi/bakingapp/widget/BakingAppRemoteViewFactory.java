@@ -13,6 +13,8 @@ import com.somayahalharbi.bakingapp.models.Recipe;
 
 import java.util.ArrayList;
 
+//TODO: onClick doesn't work
+//TODO: display recipe name
 
 public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext;

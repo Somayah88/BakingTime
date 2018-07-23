@@ -12,7 +12,7 @@ public class SharedPref {
     public static final String PREFERENCE_NAME = "baking_app_pref";
     public static final String RECIPE = "recipe";
 
-
+    //**************** Store Recipe Info in SharedPreference for Widget*************
     public void setPrefData(Context context, Recipe recipe) {
         Gson gson = new Gson();
         String recipeJson = gson.toJson(recipe);
@@ -23,6 +23,8 @@ public class SharedPref {
 
 
     }
+    //**************** Restore Recipe Info from SharedPreference for Widget*************
+
 
     public Recipe getPrefData(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);

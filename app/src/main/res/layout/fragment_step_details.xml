@@ -8,9 +8,9 @@
     <LinearLayout
         android:id="@+id/line_content"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="@dimen/video_height"
         android:orientation="horizontal"
-        android:padding="5dp">
+        android:padding="@dimen/detail_recipe_name_padding">
 
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/video_player"
@@ -22,8 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="no video description"
-            android:textSize="30sp"
+            android:text="@string/no_video"
+            android:textSize="@dimen/no_video_textSize"
             android:textStyle="bold"
             android:visibility="gone"
 
@@ -41,8 +41,8 @@
     <RelativeLayout
         android:id="@+id/rv_details"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_height="@dimen/linear_layout_height_with_weight"
+        android:layout_weight="@dimen/layout_weight_second">
 
 
         <Button
@@ -61,11 +61,11 @@
             android:layout_height="wrap_content"
             android:layout_alignWithParentIfMissing="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/step_description_margin"
             android:layout_toLeftOf="@+id/next_step"
             android:layout_toRightOf="@+id/prev_step"
-            android:padding="5dp"
-            android:textSize="16sp"
+            android:padding="@dimen/detail_recipe_name_padding"
+            android:textSize="@dimen/medium_text_size"
             android:textStyle="italic" />
 
         <Button

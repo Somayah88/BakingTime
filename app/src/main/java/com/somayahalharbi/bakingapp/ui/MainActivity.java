@@ -10,12 +10,12 @@ import android.util.Log;
 
 import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.Utils.ApiService;
+import com.somayahalharbi.bakingapp.Utils.DeviceConfig;
 import com.somayahalharbi.bakingapp.Utils.NetworkUtilities;
 import com.somayahalharbi.bakingapp.Utils.SharedPref;
 import com.somayahalharbi.bakingapp.adapters.RecipeAdapter;
 import com.somayahalharbi.bakingapp.idling.EspressoIdlingResource;
 import com.somayahalharbi.bakingapp.models.Recipe;
-import com.somayahalharbi.bakingapp.widget.BakingAppRemoteViewsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +28,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements RecipeAdapter.RecipeAdapterOnClickHandler {
     private static final String TAG = "MainActivity";
+    //****************************************
     @BindView(R.id.recipe_recycler_view)
     RecyclerView mRecipeRecyclerView;
+    //***************************************
     private List<Recipe> recipes = new ArrayList<>();
     private RecipeAdapter mRecipeAdapter;
+    //****************************************
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +44,14 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         GridLayoutManager gridLayoutManager;
         fetchData();
 
+        if (DeviceConfig.isTablet(this)) {
+            gridLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
 
-        // if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else {
             gridLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
+        }
 
-        //} else {
-        //  gridLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false);
 
-        //}
         mRecipeRecyclerView.setLayoutManager(gridLayoutManager);
         mRecipeAdapter = new RecipeAdapter(this);
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
     }
 
     private void fetchData() {
-        EspressoIdlingResource.increment(); // stops Espresso tests from going forward
+        EspressoIdlingResource.increment();
 
         ApiService api = NetworkUtilities.getRetrofitInstance().create(ApiService.class);
         Call<List<Recipe>> call = api.getMyJSON();
@@ -98,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         Class destinationClass = DetailsActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
         intentToStartDetailActivity.putExtra("recipe", recipe);
-        // Update data in shared preference for the widget
+        // ******* Update data in shared preference for the widget**********
         SharedPref pref = new SharedPref();
         pref.setPrefData(context, recipe);
-        BakingAppRemoteViewsService widgetService = new BakingAppRemoteViewsService();
+        //*******************************************************************
         startActivity(intentToStartDetailActivity);
 
     }
