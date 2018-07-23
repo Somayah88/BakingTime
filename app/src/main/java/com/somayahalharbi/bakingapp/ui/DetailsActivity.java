@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailsActivity extends AppCompatActivity implements StepsAdapter.StepAdapterOnClickHandler {
+public class DetailsActivity extends AppCompatActivity implements StepsAdapter.StepAdapterOnClickHandler, StepDetailFragment.NavigationButtonListener {
     public static final String EXTRA_STEP_FRAGMENT = "step_fragment";
     public final String EXTRA_ROTATION = "extra_is_rotated";
     private final String INGREDIENTS_LIST_EXTRA = "ingredients_list";
@@ -62,6 +62,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
             if (savedInstanceState.containsKey(INGREDIENTS_LIST_EXTRA)) {
                 mIngredientList = savedInstanceState.getParcelableArrayList(INGREDIENTS_LIST_EXTRA);
                 mStepsList = savedInstanceState.getParcelableArrayList(STEPS_LIST_EXTRA);
+                currentPosition = savedInstanceState.getInt(CURRENT_STEP_INDEX);
                 if (isTablet()) {
                     mStepDetailFragment = getSupportFragmentManager().getFragment(savedInstanceState, EXTRA_STEP_FRAGMENT);
 
@@ -165,7 +166,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
 
         mStepDetailFragment.setArguments(bundle);
         FragmentManager stepsFragmentManager = getSupportFragmentManager();
-        stepsFragmentManager.beginTransaction().add(R.id.steps_container, mStepDetailFragment).commit();
+        stepsFragmentManager.beginTransaction().replace(R.id.step_container, mStepDetailFragment).commit();
 
 
     }
@@ -186,4 +187,38 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
         });
     }
 
+    @Override
+    public void onNextClicked() {
+        if (isTablet())
+            if (currentPosition < mStepsList.size() - 1) {
+                currentPosition++;
+                replaceFragment(currentPosition);
+
+
+            }
+
+    }
+
+    @Override
+    public void onPrevClicked() {
+        if (isTablet())
+            if (currentPosition > 0) {
+                currentPosition--;
+                replaceFragment(currentPosition);
+
+            }
+
+    }
+
+    private void replaceFragment(int index) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(STEPS_LIST, mStepsList);
+        bundle.putInt(CURRENT_STEP_INDEX, index);
+        mStepDetailFragment = new StepDetailFragment();
+        mStepDetailFragment.setArguments(bundle);
+        FragmentManager stepsFragmentManager = getSupportFragmentManager();
+        stepsFragmentManager.beginTransaction().replace(R.id.step_container, mStepDetailFragment).commit();
+
+
+    }
 }

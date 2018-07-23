@@ -2,7 +2,6 @@ package com.somayahalharbi.bakingapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -43,13 +42,13 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         fetchData();
 
 
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        // if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             gridLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
 
-        } else {
-            gridLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false);
+        //} else {
+        //  gridLayoutManager = new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false);
 
-        }
+        //}
         mRecipeRecyclerView.setLayoutManager(gridLayoutManager);
         mRecipeAdapter = new RecipeAdapter(this);
         mRecipeRecyclerView.setAdapter(mRecipeAdapter);

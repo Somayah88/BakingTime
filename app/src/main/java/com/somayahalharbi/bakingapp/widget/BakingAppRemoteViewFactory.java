@@ -48,6 +48,7 @@ public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteView
         updateData();
 
 
+
     }
 
     @Override
@@ -68,6 +69,7 @@ public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteView
         remoteView.setTextViewText(R.id.widget_ingredient_item, ingredientList.get(position).getIngredient());
         remoteView.setTextViewText(R.id.widget_ingredient_measurement, ingredientList.get(position).getMeasure());
         remoteView.setTextViewText(R.id.widget_ingredient_quantity, String.valueOf(ingredientList.get(position).getQuantity()));
+
 
         //TODO: Continue this
         return remoteView;

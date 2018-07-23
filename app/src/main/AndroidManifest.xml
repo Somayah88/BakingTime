@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.somayahalharbi.bakingapp">
 
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -25,7 +26,8 @@
         <activity
             android:name=".ui.DetailsActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="fullSensor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
@@ -34,6 +36,7 @@
             android:name=".ui.StepsDetailsActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".ui.DetailsActivity"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoActionBar"
 
             />

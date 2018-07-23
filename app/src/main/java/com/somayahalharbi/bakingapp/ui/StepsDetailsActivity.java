@@ -1,15 +1,13 @@
 package com.somayahalharbi.bakingapp.ui;
 
 
-import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Surface;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.somayahalharbi.bakingapp.R;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StepsDetailsActivity extends AppCompatActivity {
+public class StepsDetailsActivity extends AppCompatActivity implements StepDetailFragment.NavigationButtonListener {
     public static final String EXTRA_STEP_FRAGMENT = "step_fragment";
     private final String STEPS_LIST = "steps_list";
     private final String CURRENT_STEP_INDEX = "step_index";
@@ -82,23 +80,26 @@ public class StepsDetailsActivity extends AppCompatActivity {
 
     private boolean isRotated() {
 
-        boolean mRotation;
-        assert (this.getSystemService(Context.WINDOW_SERVICE)) != null;
-        assert this.getSystemService(Context.WINDOW_SERVICE) != null;
-        final int rotation = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
-        switch (rotation) {
-            case Surface.ROTATION_90:
-                mRotation = true;
-                break;
+//        boolean mRotation;
+//        assert (this.getSystemService(Context.WINDOW_SERVICE)) != null;
+//        assert this.getSystemService(Context.WINDOW_SERVICE) != null;
+//        final int rotation = ((WindowManager) this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+//        switch (rotation) {
+//            case Surface.ROTATION_90:
+//                mRotation = true;
+//                break;
+//
+//            case Surface.ROTATION_180:
+//                mRotation = true;
+//                break;
+//
+//            default:
+//                mRotation = false;
+//        }
+//        return mRotation;
+        return this.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE;
 
-            case Surface.ROTATION_180:
-                mRotation = true;
-                break;
-
-            default:
-                mRotation = false;
-        }
-        return mRotation;
     }
 
     @Override
@@ -109,4 +110,37 @@ public class StepsDetailsActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onNextClicked() {
+        if (currentIndex < stepList.size() - 1) {
+            currentIndex++;
+            replaceFragment(currentIndex);
+
+
+        }
+
+    }
+
+    @Override
+    public void onPrevClicked() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            replaceFragment(currentIndex);
+
+        }
+
+    }
+
+    private void replaceFragment(int index) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(STEPS_LIST, stepList);
+        bundle.putInt(CURRENT_STEP_INDEX, index);
+        stepsFragment = new StepDetailFragment();
+        // StepDetailFragment stepDetailFragment=new StepDetailFragment();
+        stepsFragment.setArguments(bundle);
+        FragmentManager stepsFragmentManager = getSupportFragmentManager();
+        stepsFragmentManager.beginTransaction().replace(R.id.steps_container, stepsFragment).commit();
+
+
+    }
 }
