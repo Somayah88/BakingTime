@@ -81,6 +81,7 @@ public class StepDetailFragment extends Fragment {
     private ArrayList<Step> stepList = new ArrayList<>();
     private long mPlayerPosition = 0;
     private boolean isPlayWhenReady;
+    private String videoUrl;
 
 
     @Override
@@ -112,9 +113,8 @@ public class StepDetailFragment extends Fragment {
             if (bundle.containsKey(STEPS_INDEX) && bundle.containsKey(STEPS_LIST)) {
                 stepList = bundle.getParcelableArrayList(STEPS_LIST);
                 currentStepIndex = bundle.getInt(STEPS_INDEX);
-
-
             }
+
         }
 
 
@@ -172,10 +172,9 @@ public class StepDetailFragment extends Fragment {
                     new DefaultRenderersFactory(getActivity()),
                     new DefaultTrackSelector(), new DefaultLoadControl());
             mVideoPlayer.setPlayer(mExoPlayer);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.setPlayWhenReady(isPlayWhenReady);
             MediaSource mediaSource = buildMediaSource(mVideoUri);
             mExoPlayer.prepare(mediaSource, false, false);
-            mExoPlayer.setPlayWhenReady(true);
             mExoPlayer.seekTo(mPlayerPosition);
 
         }
@@ -185,7 +184,7 @@ public class StepDetailFragment extends Fragment {
         releaseVideoPlayer();
         thumbnailImageView.setVisibility(View.GONE);
         if (stepList.size() > 0) {
-            String videoUrl = stepList.get(currentStepIndex).getVideoURL();
+            videoUrl = stepList.get(currentStepIndex).getVideoURL();
             String thumbnailURL = stepList.get(currentStepIndex).getThumbnailURL();
             if (!DeviceConfig.isRotated(getActivity())) {
                 descriptionTv.setText(stepList.get(currentStepIndex).getDescription());
@@ -198,7 +197,6 @@ public class StepDetailFragment extends Fragment {
                 Log.d(TAG, "TestShow \n Description = " + stepList.get(currentStepIndex).getDescription());
 
             } else if (!videoUrl.isEmpty()) { //Case 2: Video -> Display Video
-                initializePlayer(Uri.parse(videoUrl));
                 noVideoTv.setVisibility(View.GONE);
                 mVideoPlayer.setVisibility(View.VISIBLE);
                 thumbnailImageView.setVisibility(View.GONE);
@@ -261,7 +259,6 @@ public class StepDetailFragment extends Fragment {
         super.onDestroyView();
         if (viewUnbinder != null) {
             viewUnbinder.unbind();
-            releaseVideoPlayer();
         }
     }
 
@@ -274,8 +271,7 @@ public class StepDetailFragment extends Fragment {
             isPlayWhenReady = mExoPlayer.getPlayWhenReady();
 
         }
-        if (mExoPlayer != null)
-            isPlayWhenReady = mExoPlayer.getPlayWhenReady();
+
 
         Log.d(TAG, "mPlayerPosition onPause = " + String.valueOf(mPlayerPosition));
 
@@ -300,6 +296,25 @@ public class StepDetailFragment extends Fragment {
         super.onStop();
         if (Util.SDK_INT > 23) {
             releaseVideoPlayer();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            initializePlayer(Uri.parse(videoUrl));
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!videoUrl.isEmpty()) {
+            if ((Util.SDK_INT <= 23 || mExoPlayer == null)) {
+                initializePlayer(Uri.parse(videoUrl));
+            }
         }
     }
 
