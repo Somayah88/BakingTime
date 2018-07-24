@@ -120,7 +120,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
 
             Log.v("DetailsActivity", "Device is tablet");
             if (currentPosition >= 0)
-                createFragment(currentPosition, false);
+                createFragment(currentPosition);
         }
 //************ Update Widget**********
         updateIngredientWidget();
@@ -152,7 +152,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
 
         if (DeviceConfig.isTablet(this)) {
             mStepDetailFragment = new StepDetailFragment();
-            createFragment(currentPosition, false);
+            createFragment(currentPosition);
         } else {
             Context context = DetailsActivity.this;
             Class destinationClass = StepsDetailsActivity.class;
@@ -164,7 +164,7 @@ public class DetailsActivity extends AppCompatActivity implements StepsAdapter.S
 
     }
 
-    private void createFragment(int position, boolean rotated) {
+    private void createFragment(int position) {
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(STEPS_LIST_EXTRA, mStepsList);
