@@ -74,7 +74,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
 
     public class RecipeAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.recipe_name)
+        @BindView(R.id.widget_app_name)
         TextView recipeTV;
         @BindView(R.id.serving_tv)
         TextView servingTv;

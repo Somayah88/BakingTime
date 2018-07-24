@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.somayahalharbi.bakingapp.R;
 import com.somayahalharbi.bakingapp.Utils.ApiService;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
 
                     } else {
-                        //TODO: show error message
+                        closeOnError();
 
                     }
                 }
@@ -93,6 +94,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
             }
         });
+    }
+
+    private void closeOnError() {
+        finish();
+        Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
     }
 
     @Override

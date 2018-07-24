@@ -13,13 +13,10 @@ import com.somayahalharbi.bakingapp.models.Recipe;
 
 import java.util.ArrayList;
 
-//TODO: onClick doesn't work
-//TODO: display recipe name
 
 public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext;
     private ArrayList<Ingredient> ingredientList = new ArrayList<>();
-    private String recipeName;
     private int appWidgetId;
 
     public BakingAppRemoteViewFactory(Context mContext, Intent intent) {
@@ -37,10 +34,10 @@ public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteView
     }
 
     public void updateData() {
+        ingredientList.clear();
         SharedPref sharedPref = new SharedPref();
         Recipe recipe = sharedPref.getPrefData(mContext);
         ingredientList = recipe.getIngredients();
-        recipeName = recipe.getName();
 
     }
 
@@ -67,14 +64,14 @@ public class BakingAppRemoteViewFactory implements RemoteViewsService.RemoteView
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews remoteView = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_item);
-        remoteView.setTextViewText(R.id.widget_ingredient_item, ingredientList.get(position).getIngredient());
-        remoteView.setTextViewText(R.id.widget_ingredient_measurement, ingredientList.get(position).getMeasure());
-        remoteView.setTextViewText(R.id.widget_ingredient_quantity, String.valueOf(ingredientList.get(position).getQuantity()));
 
 
-        //TODO: Continue this
-        return remoteView;
+        RemoteViews views = new RemoteViews((mContext.getPackageName()), R.layout.widget_list_item);
+        views.setTextViewText(R.id.widget_ingredient_item, ingredientList.get(position).getIngredient());
+        views.setTextViewText(R.id.widget_ingredient_measurement, ingredientList.get(position).getMeasure());
+        views.setTextViewText(R.id.widget_ingredient_quantity, String.valueOf(ingredientList.get(position).getQuantity()));
+
+        return views;
     }
 
     @Override

@@ -29,22 +29,18 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
         Recipe recipe = pref.getPrefData(context);
         if (recipe != null) {
 
-            CharSequence widgetText = recipe.getName();
+
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
-            views.setTextViewText(R.id.recipe_name, widgetText);
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+            Intent recipeIntent = new Intent(context, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, recipeIntent, 0);
+            views.setOnClickPendingIntent(R.id.widget_app_name, pendingIntent);
 
-
-            Intent titleIntent = new Intent(context, MainActivity.class);
-            PendingIntent titlePendingIntent = PendingIntent.getActivity(context, 0, titleIntent, 0);
-            views.setOnClickPendingIntent(R.id.recipe_name, titlePendingIntent);
             Intent intent = new Intent(context, BakingAppRemoteViewsService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             views.setRemoteAdapter(R.id.widget_listView, intent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listView);
-//TODO: update recipe name in widget
         }
     }
 
@@ -56,6 +52,7 @@ public class BakingAppWidgetProvider extends AppWidgetProvider {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName cn = new ComponentName(context, BakingAppWidgetProvider.class);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(cn), R.id.widget_listView);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(cn), R.id.widget_app_name);
         }
 
 

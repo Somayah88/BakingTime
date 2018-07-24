@@ -187,7 +187,6 @@ public class StepDetailFragment extends Fragment {
         if (stepList.size() > 0) {
             String videoUrl = stepList.get(currentStepIndex).getVideoURL();
             String thumbnailURL = stepList.get(currentStepIndex).getThumbnailURL();
-            //TODO: confirm this step || DeviceConfig.isTablet(getActivity())
             if (!DeviceConfig.isRotated(getActivity())) {
                 descriptionTv.setText(stepList.get(currentStepIndex).getDescription());
 
@@ -212,11 +211,9 @@ public class StepDetailFragment extends Fragment {
                 Picasso
                         .with(getActivity())
                         .load(thumbnailURL)
-                        //.placeholder(R.mipmap.ic_launcher) //TODO: change to a drawable
+                        .placeholder(R.drawable.image_na)
                         .into(thumbnailImageView);
                 thumbnailImageView.setVisibility(View.VISIBLE);
-
-                //TODO: change the image placeholder.
                 Log.d(TAG, "TestShow \n thumbnailURL =" + thumbnailURL);
 
             }

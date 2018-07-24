@@ -5,6 +5,7 @@
     <string name="Not_Available">N/A</string>
     <string name="servings"> Servings</string>
     <string name="detail_error">Recipe Data is not Available </string>
+    <string name="error">Something Went Wrong, Please Try Again </string>
     <string name="ingredient_label_tv">Ingredients</string>
     <string name="steps_label">Steps</string>
     <string name="widget_recipe_name">No Recipe Selected</string>
